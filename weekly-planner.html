@@ -68,6 +68,64 @@
 .role-badge.student{background:var(--asgn-header);color:var(--text-primary);}
 .role-badge.tutor{background:var(--task-header);color:var(--text-primary);}
 
+/* ── STUDENT PROFILE PAGE (tutor view) ── */
+#student-profile-view header{max-width:1100px;}
+.student-profile-content{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
+.profile-box{background:var(--bg);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;}
+.profile-box-header{
+  background:var(--asgn-header);padding:12px 20px;
+  font-size:12px;font-weight:600;color:var(--text-primary);
+  letter-spacing:0.04em;
+}
+.profile-box-body{padding:16px 20px;}
+.profile-textarea{
+  width:100%;border:none;outline:none;resize:none;font-family:inherit;
+  font-size:13px;color:var(--text-primary);background:transparent;
+  line-height:1.6;min-height:80px;
+}
+.profile-textarea::placeholder{color:var(--text-tertiary);}
+.profile-view-btn{
+  display:inline-block;padding:10px 20px;background:var(--accent);color:#fff;
+  border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+  font-family:inherit;transition:opacity 0.15s;
+}
+.profile-view-btn:hover{opacity:0.88;}
+.toggle-list{display:flex;flex-direction:column;gap:12px;}
+.toggle-item{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.toggle-label{font-size:13px;color:var(--text-primary);}
+.toggle-desc{font-size:11px;color:var(--text-tertiary);margin-top:2px;}
+.toggle-switch{
+  position:relative;width:40px;height:22px;flex-shrink:0;
+}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
+  background:var(--border-hover);border-radius:22px;transition:0.2s;
+}
+.toggle-slider:before{
+  position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;
+  background:#fff;border-radius:50%;transition:0.2s;
+}
+.toggle-switch input:checked + .toggle-slider{background:var(--accent);}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(18px);}
+.assign-table{width:100%;border-collapse:collapse;font-size:12px;}
+.assign-table th{
+  background:var(--bg-secondary);padding:8px 12px;font-size:11px;font-weight:600;
+  color:var(--text-secondary);text-align:left;border-bottom:0.5px solid var(--border);
+}
+.assign-table td{border-bottom:0.5px solid var(--border);padding:0;}
+.assign-table td input{
+  width:100%;border:none;outline:none;padding:8px 12px;
+  font-family:inherit;font-size:12px;color:var(--text-primary);background:transparent;
+}
+.assign-table td input::placeholder{color:var(--text-tertiary);}
+.assign-add-btn{
+  background:none;border:none;cursor:pointer;font-size:12px;
+  color:var(--text-tertiary);padding:8px 12px;font-family:inherit;
+  opacity:0.6;transition:opacity 0.15s;display:block;
+}
+.assign-add-btn:hover{opacity:1;}
+
 /* ── TUTOR DASHBOARD ── */
 #tutor-view header{max-width:1100px;}
 .tutor-content{max-width:1100px;margin:0 auto;}
@@ -458,7 +516,6 @@ tr:hover .del-row-btn{opacity:1;}
   <header>
     <div class="brand">Weekly Planner <span>— executive function</span></div>
     <div class="auth-user-bar" id="user-bar" style="display:none;">
-      <span id="user-email-display"></span>
       <span class="role-badge" id="user-role-badge"></span>
       <button id="tutor-dashboard-btn" style="display:none;">Dashboard</button>
       <button id="sign-out-btn">Sign out</button>
@@ -530,6 +587,58 @@ tr:hover .del-row-btn{opacity:1;}
 </div>
 
 <!-- ── BREAKDOWN VIEW ── -->
+<!-- ── STUDENT PROFILE VIEW (tutor sees this when clicking a student) ── -->
+<div class="view" id="student-profile-view">
+  <header>
+    <div>
+      <div class="breakdown-title" id="sp-student-label">Student</div>
+      <div class="breakdown-asgn-name" id="sp-student-name">—</div>
+    </div>
+    <button class="back-btn" id="sp-back-btn">&#8592; Back to dashboard</button>
+  </header>
+  <div class="student-profile-content">
+
+    <!-- Overview box -->
+    <div class="profile-box">
+      <div class="profile-box-header">Student Overview</div>
+      <div class="profile-box-body">
+        <textarea class="profile-textarea" id="sp-overview" placeholder="Add notes about this student — goals, strengths, areas to work on…"></textarea>
+      </div>
+    </div>
+
+    <!-- Assign homework box -->
+    <div class="profile-box">
+      <div class="profile-box-header">Assign Homework</div>
+      <div class="profile-box-body">
+        <table class="assign-table">
+          <thead><tr><th>Assignment</th><th style="width:140px">Due Date</th></tr></thead>
+          <tbody id="sp-assign-tbody"></tbody>
+        </table>
+        <button class="assign-add-btn" id="sp-assign-add">+ add assignment</button>
+      </div>
+    </div>
+
+    <!-- Feature toggles box -->
+    <div class="profile-box">
+      <div class="profile-box-header">Features</div>
+      <div class="profile-box-body">
+        <div class="toggle-list" id="sp-toggles">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- View planner button -->
+    <div class="profile-box">
+      <div class="profile-box-header">Student Planner</div>
+      <div class="profile-box-body">
+        <button class="profile-view-btn" id="sp-view-planner-btn">View student's planner →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- ── TUTOR DASHBOARD VIEW ── -->
 <div class="view" id="tutor-view">
   <header>
@@ -1355,6 +1464,16 @@ function generateTutorCode(userId){
 }
 
 let viewingStudentId=null; // tutor is viewing this student's data
+let viewingStudentProfile=null; // full profile object of student being viewed
+
+const TUTOR_TOGGLES=[
+  {key:'show_daily_schedule',label:'Daily Schedule',desc:'Student can open the daily schedule and drag tasks'},
+  {key:'show_grows',label:'GROWS Grade Tracker',desc:'Student can access the GROWS reflection page'},
+  {key:'show_looking_back',label:'Looking Back (Sundays)',desc:'Show "Looking Back" section on Sundays'},
+  {key:'show_looking_ahead',label:'Looking Ahead (Sundays)',desc:'Show "Looking Ahead" section on Sundays'},
+  {key:'show_task_breakdown',label:'Task Breakdown',desc:'Student can click assignments to open breakdown page'},
+  {key:'show_activities',label:'Other Activities',desc:'Show the activities section in the daily schedule'},
+];
 let currentTutorCode=''; // tutor's saved code
 let ownData={}; // tutor's own data backup while viewing student
 
@@ -1384,9 +1503,100 @@ async function renderTutorDashboard(){
   (profiles||[]).forEach(p=>{
     const card=document.createElement('div');card.className='student-card';
     card.innerHTML=`<div class="student-card-name">${p.name||'(no name)'}</div><div class="student-card-email">${p.email}</div><div class="student-card-meta">Click to view planner →</div>`;
-    card.addEventListener('click',()=>viewStudentPlanner(p.id,p.name||p.email));
+    card.addEventListener('click',()=>openStudentProfile(p));
     cardsEl.appendChild(card);
   });
+}
+
+async function openStudentProfile(profile){
+  viewingStudentProfile=profile;
+  document.getElementById('sp-student-name').textContent=profile.name||profile.email;
+  document.getElementById('sp-student-label').textContent='Student';
+  // Load tutor notes for this student from Supabase
+  try{
+    const {data}=await _sb.from('tutor_student_notes')
+      .select('overview,assignments,toggles')
+      .eq('tutor_id',currentUser.id)
+      .eq('student_id',profile.id)
+      .maybeSingle();
+    const notes=data||{overview:'',assignments:[],toggles:{}};
+    document.getElementById('sp-overview').value=notes.overview||'';
+    renderAssignTable(notes.assignments||[]);
+    renderToggles(notes.toggles||{});
+    // Store locally for saves
+    window._spNotes=notes;
+  }catch(e){
+    document.getElementById('sp-overview').value='';
+    renderAssignTable([]);renderToggles({});
+    window._spNotes={overview:'',assignments:[],toggles:{}};
+  }
+  showView('student-profile-view');
+}
+
+function renderAssignTable(assignments){
+  const tbody=document.getElementById('sp-assign-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  const rows=assignments.length>0?assignments:[{name:'',due:''}];
+  rows.forEach((a,i)=>{
+    const tr=document.createElement('tr');
+    const nameTd=document.createElement('td');
+    const nameInp=document.createElement('input');nameInp.type='text';
+    nameInp.value=a.name||'';nameInp.placeholder='Assignment name…';
+    nameInp.addEventListener('blur',e=>{
+      window._spNotes.assignments[i]=window._spNotes.assignments[i]||{};
+      window._spNotes.assignments[i].name=e.target.value;
+      saveStudentProfile();
+    });
+    nameTd.appendChild(nameInp);
+    const dueTd=document.createElement('td');
+    const dueInp=document.createElement('input');dueInp.type='text';
+    dueInp.value=a.due||'';dueInp.placeholder='e.g. Mon Jun 28';
+    dueInp.addEventListener('blur',e=>{
+      window._spNotes.assignments[i]=window._spNotes.assignments[i]||{};
+      window._spNotes.assignments[i].due=e.target.value;
+      saveStudentProfile();
+    });
+    dueTd.appendChild(dueInp);
+    tr.appendChild(nameTd);tr.appendChild(dueTd);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderToggles(toggleValues){
+  const container=document.getElementById('sp-toggles');
+  if(!container)return;
+  container.innerHTML='';
+  TUTOR_TOGGLES.forEach(t=>{
+    const item=document.createElement('div');item.className='toggle-item';
+    const labelDiv=document.createElement('div');
+    labelDiv.innerHTML=`<div class="toggle-label">${t.label}</div><div class="toggle-desc">${t.desc}</div>`;
+    const sw=document.createElement('label');sw.className='toggle-switch';
+    const inp=document.createElement('input');inp.type='checkbox';
+    inp.checked=toggleValues[t.key]!==false; // default ON
+    inp.addEventListener('change',e=>{
+      if(!window._spNotes.toggles)window._spNotes.toggles={};
+      window._spNotes.toggles[t.key]=e.target.checked;
+      saveStudentProfile();
+    });
+    const slider=document.createElement('span');slider.className='toggle-slider';
+    sw.appendChild(inp);sw.appendChild(slider);
+    item.appendChild(labelDiv);item.appendChild(sw);
+    container.appendChild(item);
+  });
+}
+
+async function saveStudentProfile(){
+  if(!viewingStudentProfile||!currentUser)return;
+  try{
+    await _sb.from('tutor_student_notes').upsert({
+      tutor_id:currentUser.id,
+      student_id:viewingStudentProfile.id,
+      overview:window._spNotes.overview||'',
+      assignments:window._spNotes.assignments||[],
+      toggles:window._spNotes.toggles||{}
+    },{onConflict:'tutor_id,student_id'});
+  }catch(e){console.error('Save profile error:',e);}
 }
 
 async function viewStudentPlanner(studentId,studentName){
@@ -1688,7 +1898,6 @@ async function onSignedIn(user){
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('user-bar').style.display='flex';
   showView('planner-view');
-  document.getElementById('user-email-display').textContent=user.email;
   const badge=document.getElementById('user-role-badge');
   badge.textContent=currentRole;badge.className='role-badge '+currentRole;
   // Show tutor dashboard button for tutors
@@ -1707,9 +1916,14 @@ async function onSignedIn(user){
   }catch(e){console.error('Profile upsert error:',e);}
   // Load data and render
   await loadData();
-  render();
-  // Show student tutor-link section if student
-  if(currentRole==='student')renderStudentTutorSection();
+  if(currentRole==='tutor'){
+    showView('tutor-view');
+    renderTutorDashboard();
+  } else {
+    showView('planner-view');
+    render();
+    renderStudentTutorSection();
+  }
   // Load saved theme
   try{
     const saved=localStorage.getItem('ef_theme');
@@ -1728,6 +1942,30 @@ function showAuthScreen(){
 let authMode='login';let selectedRole='student';
 
 document.addEventListener('DOMContentLoaded', function(){
+  // Student profile page listeners
+  const spBack=document.getElementById('sp-back-btn');
+  if(spBack)spBack.addEventListener('click',()=>showView('tutor-view'));
+
+  const spViewBtn=document.getElementById('sp-view-planner-btn');
+  if(spViewBtn)spViewBtn.addEventListener('click',()=>{
+    if(viewingStudentProfile)viewStudentPlanner(viewingStudentProfile.id,viewingStudentProfile.name||viewingStudentProfile.email);
+  });
+
+  const spAssignAdd=document.getElementById('sp-assign-add');
+  if(spAssignAdd)spAssignAdd.addEventListener('click',()=>{
+    if(!window._spNotes)window._spNotes={overview:'',assignments:[],toggles:{}};
+    window._spNotes.assignments=window._spNotes.assignments||[];
+    window._spNotes.assignments.push({name:'',due:''});
+    renderAssignTable(window._spNotes.assignments);
+  });
+
+  const spOverview=document.getElementById('sp-overview');
+  if(spOverview)spOverview.addEventListener('blur',e=>{
+    if(!window._spNotes)window._spNotes={};
+    window._spNotes.overview=e.target.value;
+    saveStudentProfile();
+  });
+
   // Tutor code input auto-format
   const codeEntry=document.getElementById('tutor-code-entry');
   if(codeEntry){
